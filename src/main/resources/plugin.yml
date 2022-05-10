@@ -1,0 +1,5 @@
+name: DynamicSoulCircle
+main: top.wcpe.dynamicsoulcircle.DynamicSoulCircle
+version: "${version}"
+author: QQ1837019522
+depend: ["DragonCore"]
