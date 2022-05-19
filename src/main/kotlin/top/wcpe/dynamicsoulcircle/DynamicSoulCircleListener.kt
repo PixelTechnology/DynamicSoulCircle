@@ -116,12 +116,6 @@ class DynamicSoulCircleListener : Listener {
                     return
                 }
             }
-            if (!RandomUtil.probability(config.getDouble("probability"))) {
-                Bukkit.getScheduler().runTask(DynamicSoulCircle.instance) {
-                    StringActionUtil.executionCommands(config.getStringList("fail-string-action"), false, player)
-                }
-                return
-            }
 
             absorbPlayer[e.player.name] = soulCircle
             soulCircle.absorb(player)
@@ -135,8 +129,8 @@ class DynamicSoulCircleListener : Listener {
                     )
                 }
             }, OtherUtil.CountDownFinishTask {
-                absorbPlayer.remove(player.name).let {
-                    if (it == null) {
+                absorbPlayer.remove(player.name)?.also {
+                    if (!RandomUtil.probability(config.getDouble("probability"))) {
                         Bukkit.getScheduler().runTask(DynamicSoulCircle.instance) {
                             StringActionUtil.executionCommands(
                                 config.getStringList("fail-string-action"),
@@ -145,7 +139,6 @@ class DynamicSoulCircleListener : Listener {
                             )
                         }
                     } else {
-                        it.absorbFinish(player)
                         Bukkit.getScheduler().runTask(DynamicSoulCircle.instance) {
                             StringActionUtil.executionCommands(
                                 config.getStringList("success-string-action"),
@@ -154,7 +147,7 @@ class DynamicSoulCircleListener : Listener {
                             )
                         }
                     }
-                }
+                }?.run { absorbFinish(player) }
             }, config.getInt("absorb-time"))
 
         }
