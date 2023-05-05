@@ -21,17 +21,21 @@ class DynamicSoulCircle : JavaPlugin() {
     companion object {
         @JvmStatic
         lateinit var instance: DynamicSoulCircle
+            private set
 
         @JvmStatic
-        val dataManager: IDataManager = DataManagerImpl()
+        lateinit var dataManager: IDataManager
+            private set
 
         @JvmStatic
         lateinit var messageManager: MessageManager
+            private set
     }
 
     override fun onEnable() {
         instance = this
         saveDefaultConfig()
+        dataManager = DataManagerImpl()
         messageManager = MessageManager(this, "CN")
         CoreAPI.registerKey(config.getString("absorb-key"))
         DynamicSoulCircleCommands()

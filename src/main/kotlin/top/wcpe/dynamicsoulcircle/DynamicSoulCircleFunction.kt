@@ -73,9 +73,6 @@ object DynamicSoulCircleFunction {
             )
         }
 
-
-
-
         return worldTexture
     }
 
