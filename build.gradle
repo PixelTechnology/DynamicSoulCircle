@@ -1,18 +1,27 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
-    id 'java'
-    id 'maven-publish'
-    id 'org.jetbrains.dokka' version "1.6.10"
+buildscript {
+    ext {
+        kotlin_version = "1.7.10"
+        wcpelibVersion = "1.0.17"
+    }
 }
 
-group 'top.wcpe.dynamicsoulcircle'
-version '1.0.1'
+plugins {
+    id 'idea'
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version "${kotlin_version}"
+    id 'maven-publish'
+    id 'org.jetbrains.dokka' version "${kotlin_version}"
+}
+
+
+group = 'top.wcpe'
+version = '1.0.2-alpha-dev-1'
 
 processResources {
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
+    filesMatching(['plugin.yml']){
         expand props
     }
     from('src/main/java') {
@@ -32,25 +41,23 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    wcpelibVersion = "1.0.8"
-}
-
 dependencies {
-    implementation 'org.spigotmc:spigot:1.12.2'
-    implementation "top.wcpe.wcpelib:wcpelib-common:${rootProject.ext.wcpelibVersion}"
-    implementation "top.wcpe.wcpelib:wcpelib-bukkit:${rootProject.ext.wcpelibVersion}"
+    compileOnly 'org.spigotmc:spigot:1.12.2'
+    compileOnly "top.wcpe:wcpelib-common:${wcpelibVersion}"
+    compileOnly "top.wcpe:wcpelib-bukkit:${wcpelibVersion}"
 
     implementation 'eos.moe.dragoncore:DragonCore:2.4.7'
 
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains:annotations:23.0.0"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
 tasks.withType(JavaCompile) {
@@ -59,6 +66,20 @@ tasks.withType(JavaCompile) {
 
 test {
     useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += "-Xjvm-default=all-compatibility"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += "-Xjvm-default=all-compatibility"
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -90,4 +111,3 @@ publishing {
         }
     }
 }
-
